@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 
 interface ResponseViewerProps {
   response: {
@@ -97,7 +98,3 @@ export const ResponseViewer = ({ response }: ResponseViewerProps) => {
     </Card>
   );
 };
-
-import { Button } from "@/components/ui/button";
-
-export const Button = Button;

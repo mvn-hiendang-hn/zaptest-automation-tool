@@ -36,19 +36,39 @@
   body {
     @apply bg-background text-foreground font-inter antialiased;
   }
+}
 
-  /* Animations */
+@layer components {
   .fade-in {
-    @apply opacity-0 animate-in fade-in duration-500;
+    opacity: 0;
+    animation: fade-in 0.5s ease-out forwards;
   }
 
   .slide-in {
-    @apply translate-y-4 animate-in slide-in-from-bottom duration-300;
+    transform: translateY(1rem);
+    animation: slide-in 0.3s ease-out forwards;
   }
 
-  /* Glass effect */
   .glass {
     @apply bg-white/80 backdrop-blur-sm border border-white/20;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateY(1rem);
+  }
+  to {
+    transform: translateY(0);
   }
 }
 
