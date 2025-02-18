@@ -4,6 +4,7 @@ import { RequestBuilder, type RequestData } from "@/components/RequestBuilder";
 import { ResponseViewer } from "@/components/ResponseViewer";
 import { useToast } from "@/components/ui/use-toast";
 import { Sidebar } from "@/components/Sidebar";
+import { EnvironmentProvider } from "@/contexts/EnvironmentContext";
 
 const Index = () => {
   const { toast } = useToast();
@@ -64,22 +65,24 @@ const Index = () => {
   };
 
   return (
-    <div className="flex h-screen bg-background">
-      <Sidebar />
-      <main className="flex-1 overflow-auto">
-        <div className="container py-6 max-w-4xl">
-          <div className="mb-8">
-            <h1 className="text-2xl font-semibold">API Testing Tool</h1>
-            <p className="text-muted-foreground mt-1">
-              Test and debug your API endpoints with ease
-            </p>
-          </div>
+    <EnvironmentProvider>
+      <div className="flex h-screen bg-background">
+        <Sidebar />
+        <main className="flex-1 overflow-auto">
+          <div className="container py-6 max-w-4xl">
+            <div className="mb-8">
+              <h1 className="text-2xl font-semibold">API Testing Tool</h1>
+              <p className="text-muted-foreground mt-1">
+                Test and debug your API endpoints with ease
+              </p>
+            </div>
 
-          <RequestBuilder onSubmit={handleRequest} isLoading={isLoading} />
-          {response && <ResponseViewer response={response} />}
-        </div>
-      </main>
-    </div>
+            <RequestBuilder onSubmit={handleRequest} isLoading={isLoading} />
+            {response && <ResponseViewer response={response} />}
+          </div>
+        </main>
+      </div>
+    </EnvironmentProvider>
   );
 };
 
