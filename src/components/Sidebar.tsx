@@ -18,7 +18,7 @@ export const Sidebar = () => {
       <div className="p-4 border-b">
         <div className="flex items-center gap-2 mb-4">
           <img
-            src="/lovable-uploads/6f825db2-4a3e-4c78-8dcf-996d01055568.png"
+            src="/lovable-uploads/30401514-56f4-4119-9920-74f0e6e6be77.png"
             alt="Logo"
             className="w-8 h-8"
           />

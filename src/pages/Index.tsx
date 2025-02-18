@@ -65,24 +65,22 @@ const Index = () => {
   };
 
   return (
-    <EnvironmentProvider>
-      <div className="flex h-screen bg-background">
-        <Sidebar />
-        <main className="flex-1 overflow-auto">
-          <div className="container py-6 max-w-4xl">
-            <div className="mb-8">
-              <h1 className="text-2xl font-semibold">API Testing Tool</h1>
-              <p className="text-muted-foreground mt-1">
-                Test and debug your API endpoints with ease
-              </p>
-            </div>
-
-            <RequestBuilder onSubmit={handleRequest} isLoading={isLoading} />
-            {response && <ResponseViewer response={response} />}
+    <div className="flex h-screen bg-background">
+      <Sidebar />
+      <main className="flex-1 overflow-auto">
+        <div className="container py-6 max-w-4xl">
+          <div className="mb-8">
+            <h1 className="text-2xl font-semibold">API Testing Tool</h1>
+            <p className="text-muted-foreground mt-1">
+              Test and debug your API endpoints with ease
+            </p>
           </div>
-        </main>
-      </div>
-    </EnvironmentProvider>
+
+          <RequestBuilder onSubmit={handleRequest} isLoading={isLoading} />
+          {response && <ResponseViewer response={response} />}
+        </div>
+      </main>
+    </div>
   );
 };
 
