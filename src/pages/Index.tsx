@@ -3,6 +3,7 @@ import { useState } from "react";
 import { RequestBuilder, type RequestData } from "@/components/RequestBuilder";
 import { ResponseViewer } from "@/components/ResponseViewer";
 import { useToast } from "@/components/ui/use-toast";
+import { Sidebar } from "@/components/Sidebar";
 
 const Index = () => {
   const { toast } = useToast();
@@ -63,18 +64,21 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="text-center mb-8 slide-in">
-          <h1 className="text-3xl font-semibold mb-2">API Testing Tool</h1>
-          <p className="text-muted-foreground">
-            Test and debug your API endpoints with ease
-          </p>
-        </div>
+    <div className="flex h-screen bg-background">
+      <Sidebar />
+      <main className="flex-1 overflow-auto">
+        <div className="container py-6 max-w-4xl">
+          <div className="mb-8">
+            <h1 className="text-2xl font-semibold">API Testing Tool</h1>
+            <p className="text-muted-foreground mt-1">
+              Test and debug your API endpoints with ease
+            </p>
+          </div>
 
-        <RequestBuilder onSubmit={handleRequest} isLoading={isLoading} />
-        {response && <ResponseViewer response={response} />}
-      </div>
+          <RequestBuilder onSubmit={handleRequest} isLoading={isLoading} />
+          {response && <ResponseViewer response={response} />}
+        </div>
+      </main>
     </div>
   );
 };

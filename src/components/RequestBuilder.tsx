@@ -3,8 +3,6 @@ import { useState } from "react";
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
@@ -17,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { Plus } from "lucide-react";
 
 const HTTP_METHODS = ["GET", "POST", "PUT", "DELETE", "PATCH"];
 
@@ -78,15 +77,12 @@ export const RequestBuilder = ({ onSubmit, isLoading }: RequestBuilderProps) => 
   };
 
   return (
-    <Card className="glass w-full mb-6">
-      <CardHeader>
-        <CardTitle className="text-lg font-medium">Request Builder</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <Card className="border rounded-lg shadow-sm mb-6">
+      <CardContent className="p-4">
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex gap-4">
+          <div className="flex gap-2">
             <Select value={method} onValueChange={setMethod}>
-              <SelectTrigger className="w-[120px]">
+              <SelectTrigger className="w-[100px]">
                 <SelectValue placeholder="Method" />
               </SelectTrigger>
               <SelectContent>
@@ -98,11 +94,14 @@ export const RequestBuilder = ({ onSubmit, isLoading }: RequestBuilderProps) => 
               </SelectContent>
             </Select>
             <Input
-              placeholder="Enter URL"
+              placeholder="Enter request URL"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               className="flex-1"
             />
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Sending..." : "Send"}
+            </Button>
           </div>
 
           <div className="space-y-2">
@@ -114,6 +113,7 @@ export const RequestBuilder = ({ onSubmit, isLoading }: RequestBuilderProps) => 
                 size="sm"
                 onClick={addHeader}
               >
+                <Plus className="h-4 w-4 mr-1" />
                 Add Header
               </Button>
             </div>
@@ -146,10 +146,6 @@ export const RequestBuilder = ({ onSubmit, isLoading }: RequestBuilderProps) => 
               />
             </div>
           )}
-
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Sending..." : "Send Request"}
-          </Button>
         </form>
       </CardContent>
     </Card>
