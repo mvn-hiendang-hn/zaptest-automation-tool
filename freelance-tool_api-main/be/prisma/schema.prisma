@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String            @id @default(uuid())
+  username        String            @unique
+  password        String
+ token            String?
+  test_schedules  test_schedules[]
+  api_tests       api_tests[]
+  api_collections api_collections[]
+}
+
+model test_schedules {
+  id              String   @id @default(uuid())
+  name            String
+  collection_id   String?  @unique // Quan hệ 1-1 với api_collections
+  active          Boolean  @default(false)
+  frequency       String
+  selected_days   Json
+  timer_type      String
+  minute_interval Int
+  hour_interval   Int?
+  day_time        String?
+  week_day        Int?  // 🔥 Sửa từ String? → Int?
+  week_time       String?
+  send_email      Boolean
+  recipient_email String
+  user_id         String
+  created_at      DateTime @default(now())
+
+  User            User             @relation(fields: [user_id], references: [id])
+  collection_runs collection_runs[] // Một schedule có thể có nhiều collection_runs
+  api_collection  api_collections? @relation(fields: [collection_id], references: [id])
+}
+
+model api_tests {
+  id            String  @id @default(uuid())
+  name          String
+  method        String
+  url           String
+  headers       Json
+  body          String?
+  response      Json
+  status_code   Int
+  user_id       String
+  collection_id String?
+
+  User           User             @relation(fields: [user_id], references: [id])
+  api_collection api_collections? @relation(fields: [collection_id], references: [id])
+  test_results   test_results[]
+}
+
+model api_collections {
+  id          String @id @default(uuid())
+  name        String
+  description String
+  user_id     String
+
+  User            User              @relation(fields: [user_id], references: [id])
+  api_tests       api_tests[]
+  collection_runs collection_runs[]
+  test_schedule   test_schedules?
+}
+
+model collection_runs {
+  id                String   @id @default(uuid())
+  collection_id     String
+  status            String
+  total_tests       Int
+  success_count     Int
+  failure_count     Int
+  total_duration    Int
+  user_id           String
+  test_schedules_id String?  // Cho phép NULL
+  created_at        DateTime @default(now())
+  completed_at      DateTime @default(now())
+
+  test_schedules test_schedules?  @relation(fields: [test_schedules_id], references: [id]) // Quan hệ 1-1 (có thể null)
+  api_collection api_collections  @relation(fields: [collection_id], references: [id])
+  test_results   test_results[]
+}
+
+// You'll need to add definitions for test_results and any other models
+model test_results {
+  id                String   @id @default(uuid())
+  test_id           String
+  collection_run_id String
+  status_code       Int
+  duration          Int
+  error             String?
+  response          String?          @db.Text // Sử dụng kiểu Text để lưu trữ nội dung dài
+  created_at        DateTime @default(now())
+
+  api_test       api_tests       @relation(fields: [test_id], references: [id])
+  collection_run collection_runs @relation(fields: [collection_run_id], references: [id])
+}
