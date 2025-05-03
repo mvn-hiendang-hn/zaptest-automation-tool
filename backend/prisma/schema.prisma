@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(uuid())
+  email        String         @unique
+  password     String
+  displayName  String?
+  avatarUrl    String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  collections  Collection[]
+  tests        Test[]
+  schedules    Schedule[]
+  collectionRuns CollectionRun[]
+}
+
+model Collection {
+  id          String         @id @default(uuid())
+  name        String
+  description String?        @db.Text
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tests       Test[]
+  schedules   Schedule[]
+  runs        CollectionRun[]
+
+  @@index([userId])
+}
+
+model Test {
+  id           String         @id @default(uuid())
+  name         String
+  method       String
+  url          String
+  headers      Json?
+  body         String?        @db.Text
+  statusCode   Int?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  userId       String
+  collectionId String?
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collection   Collection?    @relation(fields: [collectionId], references: [id], onDelete: SetNull)
+  testResults  TestResult[]
+
+  @@index([userId])
+  @@index([collectionId])
+}
+
+model Schedule {
+  id             String         @id @default(uuid())
+  name           String
+  frequency      String
+  selectedDays   Json           @default("[]")
+  timerType      String
+  minuteInterval Int?
+  hourInterval   Int?
+  dayTime        String?
+  weekDay        String?
+  weekTime       String?
+  sendEmail      Boolean        @default(false)
+  recipientEmail String?
+  active         Boolean        @default(true)
+  lastRun        DateTime?
+  cronExpression String?        @default("")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  userId         String
+  collectionId   String
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collection     Collection     @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  runs           CollectionRun[]
+
+  @@index([userId])
+  @@index([collectionId])
+}
+
+model CollectionRun {
+  id             String       @id @default(uuid())
+  status         String
+  startedAt      DateTime     @default(now())
+  completedAt    DateTime?
+  totalTests     Int
+  successCount   Int          @default(0)
+  failureCount   Int          @default(0)
+  totalDuration  Int          @default(0) // in milliseconds
+  userId         String
+  collectionId   String
+  scheduleId     String?
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collection     Collection   @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  schedule       Schedule?    @relation(fields: [scheduleId], references: [id], onDelete: SetNull)
+  testResults    TestResult[]
+
+  @@index([userId])
+  @@index([collectionId])
+  @@index([scheduleId])
+}
+
+model TestResult {
+  id             String       @id @default(uuid())
+  statusCode     Int
+  duration       Int          // in milliseconds
+  error          String?      @db.Text
+  response       Json?
+  createdAt      DateTime     @default(now())
+  testId         String
+  collectionRunId String
+  test           Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  collectionRun  CollectionRun @relation(fields: [collectionRunId], references: [id], onDelete: Cascade)
+
+  @@index([testId])
+  @@index([collectionRunId])
+}
